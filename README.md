@@ -1,6 +1,6 @@
 # TP2_setup
 Instruction manual for installing TP2 with biogeochemistry to sigma2 HPC (Betsy etc.). This manual is developed based on 
-[Shuang's TP2 setup note](https://docs.google.com/document/d/1z53p0V0knFjaSZTXhO1WUQvG1OMDk7nzLdp_zZKGwJk/edit?tab=t.0) 
+[Shuang's TP2 setup note](https://docs.google.com/document/d/1z53p0V0knFjaSZTXhO1WUQvG1OMDk7nzLdp_zZKGwJk/edit?tab=t.0). 
 Final goal of this repository is to provide installer and job submitter in the form of bash scripts.
 
 ## TOCs: Table of Contents

@@ -4,7 +4,8 @@ Instruction manual for installing TP2 with biogeochemistry to sigma2 HPC (Betsy 
 
 ## TOCs: Table of Contents
 - [Rquirements](#requirements)
-  - [Model components](#model-components)
+  - [*Model components*](#model-components)
+  - [*Bash environment*](#bash-environment)
 
 ### Rquirements
 

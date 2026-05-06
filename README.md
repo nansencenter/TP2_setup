@@ -866,3 +866,39 @@ No fatal errors. Ok to start model set up in ..
 ```
 and you are ready to submit a hycom job.
 
+### Job submission
+
+We use default job script `srjob.sh` under `$WORK_HYCOM/$CONFIGNAME/expt_$NEWEXPERIMENT` to submit a hycom job. First, modify `srjob.sh`:
+```bash
+set -u
+
+TIME="00:30:00"
+START=${DATE_START}"T00:00:00"
+END=${DATE_END}"T00:00:00"
+
+cd $WORK_HYCOM/$CONFIGNAME/expt_$NEWEXPERIMENT
+[ ! -r srjob.sh.backup ] && cp srjob.sh srjob.sh.backup
+
+sed \
+  -e "s|^START=.*|START=\"$START\"|" \
+  -e "s|^END=.*|END=\"$END\"|" \
+  -e "s|^INITFLG=.*|INITFLG=\"$INITFLG\"|" \
+  -e "s|^#SBATCH --time=.*|#SBATCH --time=\"$TIME\"|" \
+  srjob.sh.backup > srjob.sh
+```
+and submit `srjob.sh`:
+```bash
+set -u
+cd $WORK_HYCOM/$CONFIGNAME/expt_$NEWEXPERIMENT
+sbatch srjob.sh
+```
+
+After the submission, command:
+```bash
+squeue -u $USER
+```
+helps you check status of the submitted job.
+
+If job is successfuly finished, restart and daily mean files are moved to `$WORK_HYCOM/$CONFIGNAME/expt_$NEWEXPERIMENT/data` folder. If not, check log records under `$WORK_HYCOM/$CONFIGNAME/expt_$NEWEXPERIMENT/log`.
+
+There is useful tool to create a sample job script on Sigma2 HPC: https://open.pages.sigma2.no/job-script-generator/.

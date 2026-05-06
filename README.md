@@ -397,3 +397,149 @@ sed -i "/^export COMPILE_BIOMODEL=/c export COMPILE_BIOMODEL=\"${COMPILE_BIOMODE
 - this command should be part of expt_new.sh with COMPILE_BIOMODEL, T as command line arguments.
 - if you get error message about ice blocks exceed maximum, then change this number to the once recommend in the error message.
 
+### Compiling hycom executable (hycom_cice)
+
+Compilation of HYCOM_CICE with biogeochemical modules requires 2 pre-compiled libraries `libhycnersc.a` and `libfabm.a`.
+
+#### *Compile libhycnersc.a/MSCPROGS*
+
+First, setup proper Makefile include file `make.inc` for your environment:
+
+```bash
+set -u
+cd $HOME_HYCOM/${HYCOM_REPO}/hycom/MSCPROGS/src/Make.Inc
+
+compiler=ifort # FORTRAN compiler (eg. gfortran, gnu)
+hostname=$(head -n 1 /etc/motd | awk -F' ' '{split($3, parts, "."); print parts[1]}') # extract hostname from motd
+echo $hostname
+[ -L make.inc ] && rm make.inc
+ln -sf make.$hostname.$compiler make.inc
+ls -l make.inc
+```
+⚠️**Note**: This script is confirmed only on sigma2 Fram and Betzy.
+
+For example on Betzy, this script creates symlink `make.inc`:
+
+```bash
+make.inc -> make.betzy.ifort
+```
+
+If you set `HYCOM_REPO=NERSC-HYCOM-CICE_BIORANv2`, add the following patch before compilation (TODO: fix them on git repository):
+```bash
+set -u
+mkdir -p $HOME_HYCOM/${HYCOM_REPO}/hycom/MSCPROGS/src/Average/TMP     # debug!
+mkdir -p $HOME_HYCOM/${HYCOM_REPO}/hycom/MSCPROGS/src/Hycom_mean/TMP  # debug!
+mkdir -p $HOME_HYCOM/${HYCOM_REPO}/hycom/MSCPROGS/src/Perturb_Forcing-2.2.98_TP5/TMP # debug!
+mkdir -p $HOME_HYCOM/${HYCOM_REPO}/hycom/MSCPROGS/src/Perturb_Parameter/TMP # debug!
+```
+
+Now, compile MSCPROGS:
+```bash
+set -u
+cd $HOME_HYCOM/${HYCOM_REPO}/hycom/MSCPROGS/src
+gmake clean
+gmake all
+```
+
+Once compilation successed, install executables under `MSCPROGS/bin` and `MSCPROGS/bin_setup`:
+
+```bash
+gmake install
+```
+
+After the compilation/installation, `libhycnersc.a` can be found under
+```bash
+$HOME_HYCOM/$HYCOM_REPO/hycom/MSCPROGS/lib
+```
+
+⚠️**Note**: The installation should be repeated everytime when HPC modules are renewed.
+
+For further detail, see [Procedure for compiling/installing MSCPROGS](https://github.com/nansencenter/NERSC-HYCOM-CICE/tree/develop/hycom/MSCPROGS)
+
+#### *Compile libfabm.a/FABM*
+
+For clean install, remove `build` folder:
+```bash
+set -u
+cd $HOME_FABM
+[ -d build ] && rm -rf build
+```
+then compile fabm:
+```bash
+set -u
+cd $HOME_FABM
+mkdir build; cd build
+cmake $HOME_FABM/fabm -DFABM_HOST=hycom -DCMAKE_Fortran_COMPILER=ifort -DFABM_INSTITUTES="ersem;nersc;gotm" -DFABM_NERSC_BASE=$HOME_FABM/nersc -DFABM_ERSEM_BASE=$HOME_FABM/ersem
+make install
+```
+
+After the compilation, `libfabm.a` can be found under
+```bash
+${HOME}/local/fabm/hycom/lib64
+```
+
+#### *Compile HYCOM-CICE*
+
+⚠️**Note**: BGC module should be turned on in `blkdat.input` for physics-BGC coupled model compilation by setting bash environment variable `NTRACR`.
+
+Before the compilation, we need to copy FABM configuration files, `fabm.yaml` and `hycom_fabm.nml` and CICE namelist `ice_in`, to the `experiment` folder. In this installation manual, we use experiment setups for TP2 hindcast run:
+
+```bash
+set -u
+cd $WORK_HYCOM/$CONFIGNAME/expt_$NEWEXPERIMENT
+cp  /nird/datalake/NS9481K/shuang/TP2_setup/exp02.6_seaclim_ref/fabm.yaml .
+cp  /nird/datalake/NS9481K/shuang/TP2_setup/exp02.6_seaclim_ref/hycom_fabm.nml .
+cp  /nird/datalake/NS9481K/shuang/TP2_setup/exp02.6_seaclim_ref/ice_in .
+```
+
+For clean install, remove `build` folder:
+```bash
+set -u
+cd $WORK_HYCOM/$CONFIGNAME/expt_$NEWEXPERIMENT
+[ -d build ] && rm -rf build
+```
+then compile HYCOM-CICE:
+```bash
+set -u
+cd $WORK_HYCOM/$CONFIGNAME/expt_$NEWEXPERIMENT
+ln -sf $HOME_HYCOM/${HYCOM_REPO}/bin/compile_model.sh .    # temporal solution
+ln -sf $HOME_HYCOM/${HYCOM_REPO}/bin/common_functions.sh . # temporal solution
+bash compile_model.sh ifort -u
+```
+
+Once compilation finished, HYCOM-CICE executable `hycom_cice` is created under 
+```bash
+$WORK_HYCOM/$CONFIGNAME/expt_$NEWEXPERIMENT/build/src_2.2.98ZA-07Tsig0-i-sm-sse_relo_mpi`
+```
+
+For extra details, see [README.betzy](https://github.com/nansencenter/NERSC-HYCOM-CICE/blob/develop/README.betzy) or [README.fram](https://github.com/nansencenter/NERSC-HYCOM-CICE/blob/develop/README.fram).
+
+#### *Compile hycom_ALL*
+
+Before preparing external files to run hycom, hycom utilities `hycom_ALL` should be compiled. First, setup proper Makefile include file `Make_all.src` for your environment. Normally, this step is done manually, but here is a bash script to achieve the step at command line:
+```bash
+set -u
+cd $HOME_HYCOM/${HYCOM_REPO}/hycom/hycom_ALL/hycom_2.2.72_ALL
+compiler=intelIFC
+if [ -f config/${compiler}_setup ]; then
+   sed -i "/^setenv ARCH /c setenv ARCH $compiler" Make_all.src
+else
+   echo "Can not find setup file ${compiler}_setup, EXIT"
+fi
+```
+⚠️**Note**: This script is confirmed only on sigma2 Fram and Betzy.
+
+Then compile:
+```bash
+csh ./Make_clean.com
+csh ./Make_all.com
+csh ./Make_ncdf.com
+```
+Note compilation of `Make_ncdf.com` would be stuck due to error for the moment.
+For further detail, see [Procedure for compiling programs in hycom_2.2.72_ALL](https://github.com/nansencenter/NERSC-HYCOM-CICE/blob/develop/hycom/hycom_ALL/README.md)
+
+⚠️**Note [2026/01/14]**: These files failed to be compiled in ```Make_all.com```
+```bash
+hycom_profile_hybgen.f
+hycom_profile_hybgen+.f
+```

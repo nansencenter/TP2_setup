@@ -6,7 +6,7 @@ Instruction manual for installing TP2 with biogeochemistry to sigma2 HPC (Betsy 
 
 Installation of TOPAZ ocean model system with biogeochemical modules requires the following model components and environment setups. 
 
-#### Model components
+#### *Model components*
 
 Each component is downloaded from its associated git repository:
 
@@ -22,7 +22,7 @@ Each component is downloaded from its associated git repository:
    ERSEM is a marine biogeochemical and ecosystem model. It describes the cycling of carbon, nitrogen, phosphorus, silicon, oxygen and iron through the lower trophic level pelagic and benthic ecosystems. In this installation we use a carbon chenistry module of ERSEM.
 7. NERSC Python library (downloaded together with NERSC-HYCOM-CICE package).
 
-#### Bash environment
+#### *Bash environment*
 
 Add the following line to `.bashrc`:
 
@@ -31,11 +31,11 @@ export LANG=en_US.UTF-8
 export LC_ALL=en_US.utf8
 ```
 
-#### HPC modules
+#### *HPC modules*
 
 Add the following lines to `.bashrc`: 
 
-##### On Betzy
+##### *On Betzy*
 
 ```bash
 ml purge
@@ -91,7 +91,7 @@ In this instruction, we use the following directory tree structure for hycom (ve
                               └── ${IEXPT}       # WORK_HYCOM_FRC (forcing files folder)
 ```
 
-#### Environment variables for installation settings
+#### *Environment variables for installation settings*
 
 In order to make installation processes available through bash scripts, we set some key environment variables first:
 ```bash
@@ -168,7 +168,7 @@ mkdir -p $WORK_HYCOM
 ```
 where `HOME_##` specifies a folder for storing model source files (*home*) and `WORK_##` specifies a folder for model configuration and execution (*build*).
 
-#### Cloning the model components
+#### *Cloning the model components*
 
 Now you are ready to clone hycom under `HOME_HYCOM`:
 ```bash
@@ -224,6 +224,8 @@ pip install --user --upgrade $LIB_PYTHON/abfile
 for updating the exsisting libraries.
 
 ### Createing a new experiment
+
+Before compilation of hycom executable, we need to create a new experiment folder ``.
 
 #### *Copy configuration to a work directory*
 

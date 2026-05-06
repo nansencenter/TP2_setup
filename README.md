@@ -3,11 +3,26 @@ Instruction manual for installing TP2 with biogeochemistry to sigma2 HPC (Betsy 
 [Shuang's TP2 setup note](https://docs.google.com/document/d/1z53p0V0knFjaSZTXhO1WUQvG1OMDk7nzLdp_zZKGwJk/edit?tab=t.0). 
 Final goal of this repository is to provide installer and job submitter in the form of bash scripts.
 
-## TOCs: Table of Contents
+## Table of Contents
 - [Rquirements](#requirements)
   - [*Model components*](#model-components)
   - [*Bash environment*](#bash-environment)
   - [*HPC modules on Betzy*](#hpc-modules-on-betzy)
+- [*Installation*](#installation)
+  - [*Environment variables for installation settings*](#environment-variables-for-installation-settings)
+  - [*Cloning the model components*](#cloning-the-model-components)
+- [*Createing a new experiment*](#createing-a-new-experiment)
+  - [*Copy configuration to a work directory*](#copy-configuration-to-a-work-directory)
+  - [*Modify experiment settings in REGION.src*](#modify-experiment-settings-in-region.src)
+  - [*Create a new experiment folder*](#create-a-new-experiment-folder)
+  - [*Copy and edit hycom_opt*](#copy-and-edit-hycom_opt)
+  - [*Modify experiment settings in blkdat.input*](#modify-experiment-settings-in-blkdat.input)
+- [*Compiling hycom executable (hycom_cice)*](#compiling-hycom-executable-(hycom_cice))
+  - [*Compile libhycnersc.a/MSCPROGS*](#compile-libhycnersc.a/mscprogs)
+  - [*Compile libfabm.a/FABM*](#compile-libfabm.a/fabm)
+  - [*Compile HYCOM-CICE*](#compile-hycom-cice)
+  - [*Compile hycom_ALL*](#compile-hycom_all)
+- [*Preparing external files*](#preparing-external-files)
 
 ### Rquirements
 
@@ -244,7 +259,7 @@ cd $WORK_HYCOM/$CONFIGNAME
 ln -sf $HOME_HYCOM/${HYCOM_REPO}/bin .
 ```
 
-#### *Adjust experiment settings in REGION.src*
+#### *Modify experiment settings in REGION.src*
 
 Next, you need to prepare `REGION.src` for your experimental settings BEFORE making a new *experiment*. 
 Normally, this step is done manually, but here is a bash script to achieve the step at command line:
@@ -257,7 +272,7 @@ sed -i "/^export NHCROOT=/c export NHCROOT=$HOME_HYCOM/${HYCOM_REPO}" REGION.src
 ```
 where `R` is model configuration name and `NHCROOT` is where HYCOM-CICE source files are downloaded.
 
-#### *Create a new experiment*
+#### *Create a new experiment folder*
 
 Now you create a new *experiment* from the existing *experiment* (01.0) under hycom work/configuration directory (which is the case if you clone HYCOM-CICE from git repository).
 ```bash

@@ -222,3 +222,176 @@ pip install --user --upgrade $LIB_PYTHON/gridxsec
 pip install --user --upgrade $LIB_PYTHON/abfile
 ```
 for updating the exsisting libraries.
+
+### Createing a new experiment
+
+#### *Copy configuration to a work directory*
+
+First, copy hycom configuration and create symlink of hycom bin. For TP2, perform:
+```bash
+set -u
+cd $WORK_HYCOM
+cp -r $HOME_HYCOM/${HYCOM_REPO}/$CONFIGNAME .
+cd $WORK_HYCOM/$CONFIGNAME
+[ -f bin ] && rm bin
+ln -sf $HOME_HYCOM/${HYCOM_REPO}/bin .
+```
+
+#### *Adjust experiment settings in REGION.src*
+
+Next, you need to prepare `REGION.src` for your experimental settings BEFORE making a new *experiment*. 
+Normally, this step is done manually, but here is a bash script to achieve the step at command line:
+```bash
+set -u
+cd $WORK_HYCOM/$CONFIGNAME
+cp $HOME_HYCOM/${HYCOM_REPO}/input/REGION.src .
+sed -i "/^export R=/c export R=$CONFIGNAME" REGION.src
+sed -i "/^export NHCROOT=/c export NHCROOT=$HOME_HYCOM/${HYCOM_REPO}" REGION.src
+```
+where `R` is model configuration name and `NHCROOT` is where HYCOM-CICE source files are downloaded.
+
+#### *Create a new experiment*
+
+Now you create a new *experiment* from the existing *experiment* (01.0) under hycom work/configuration directory (which is the case if you clone HYCOM-CICE from git repository).
+```bash
+set -u
+cd $WORK_HYCOM/$CONFIGNAME
+bin/expt_new.sh 01.0 $NEWEXPERIMENT
+```
+
+After a new *experiment* folder `expt_$NEWEXPERIMENT` is created, some adjustments of `blkdat.input` and `EXPT.src` under the folder are required.
+
+#### *Copy and edit hycom_opt* ⚠️**NEW**
+
+```bash
+cd $WORK_HYCOM/$CONFIGNAME/expt_$NEWEXPERIMENT
+cp $HOME_HYCOM/$HYCOM_REPO/TP5a0.06/expt_01.0/hycom_opt .
+sed -i 's/sssrmx_scalar=99\./sssrmx_scalar=.5/' hycom_opt
+```
+
+#### *Modify experiment settings in blkdat.input*
+
+Experiment settings defined in the original `blkdat.input` are needed to be adjusted for specific hycom settings. 
+You can copy `blkdat.input` from existing TP2 configuration with nesting boundary
+```bash
+BLKDATIN=/nird/datalake/NS9481K/shuang/TP2_setup/exp02.6_seaclim_ref/blkdat.input # TP2 with nesting boundary
+```
+or with climatology boundary
+```bash
+BLKDATIN=/nird/datalake/NS9481K/shuang/TP2_setup/exp02.6_seaclim_ref/blkdat.input_clim # TP2 with climatology boundary
+```
+then run
+```bash
+set -u
+cd $WORK_HYCOM/$CONFIGNAME/expt_$NEWEXPERIMENT
+mv blkdat.input blkdat.input_backup
+cp $BLKDATIN blkdat.input
+```
+
+After importing new `blkdat.input`, you need to modify `iexpt`, `ntracr` and `rstefq` in `blkdat.input` depending on your experiment settings manually with file editor or run scripts below at command line:
+```bash
+set -u
+vars=("$IEXPT" "$RSTRFQ" "$NTRACR")
+keys=( "iexpt " "rstrfq"  "ntracr")
+```
+first and run:
+```bash
+set -u
+
+cd $WORK_HYCOM/$CONFIGNAME/expt_$NEWEXPERIMENT
+filename='blkdat.input'
+
+# Define a dictionary (an associative array) of keyword and replacement.
+declare -A replacements 
+for i in "${!keys[@]}"; do
+    replacements["${keys[$i]}"]="${vars[$i]}"
+done
+
+tempfile=$(mktemp)
+while IFS= read -r line; do
+    for keyword in "${!replacements[@]}"; do
+        replacement="${replacements[$keyword]}"
+        if [[ "$line" == *"$keyword"* ]]; then
+            line=$(echo "$line" | sed -E "s/^([[:space:]]*)(-?[0-9]+)/\1$replacement/")
+            break
+        fi
+    done
+    echo "$line" >> "$tempfile"
+done < "$filename"
+mv "$tempfile" "$filename"
+
+for key in "${keys[@]}"; do
+    grep "$key" $filename
+done
+```
+
+With hycom 2.2, we create new `blkdat.input` based on `blkdat.input_H2.298` by first setting environment variables:
+```bash
+set -u
+
+cd $WORK_HYCOM/$CONFIGNAME/expt_$NEWEXPERIMENT
+
+export VELDF4=-2               # diffusion velocity (m/s) for biharmonic momentum dissip. (use < 0 for reading exterbal file)
+export THKDF4=-2               # diffusion velocity (m/s) for biharmonic thickness diffus. (use < 0 for reading exterbal file)
+export TICEGR=2                # ENLN: temp. grad. inside ice (deg/m); =0 use surtmp
+export MSLPRF=0                # msl pressure forcing flag (0=F,1=T)
+
+vars=("$IEXPT" "$RSTRFQ" "$NTRACR" "$VELDF4" "$THKDF4" "$TICEGR" "$MSLPRF")
+keys=( "iexpt " "rstrfq"  "ntracr"  "veldf4"  "thkdf4"  "ticegr"  "mslprf")
+
+cp blkdat.input_H2.298 blkdat.input
+```
+then run:
+```bash
+set -u
+
+cd $WORK_HYCOM/$CONFIGNAME/expt_$NEWEXPERIMENT
+filename='blkdat.input'
+
+# Define a dictionary (an associative array) of keyword and replacement.
+declare -A replacements 
+for i in "${!keys[@]}"; do
+    replacements["${keys[$i]}"]="${vars[$i]}"
+done
+
+tempfile=$(mktemp)
+while IFS= read -r line; do
+    for keyword in "${!replacements[@]}"; do
+        replacement="${replacements[$keyword]}"
+        if [[ "$line" == *"$keyword"* ]]; then
+            line=$(echo "$line" | sed -E "s/^([[:space:]]*)(-?[0-9]+)/\1$replacement/")
+            break
+        fi
+    done
+    echo "$line" >> "$tempfile"
+done < "$filename"
+mv "$tempfile" "$filename"
+
+for key in "${keys[@]}"; do
+    grep "$key" $filename
+done
+```
+⚠️**Note**: This script is confirmed only with keywords in the above sample script. When you add other keyword to `replacements`, make sure first the string replacement is working as intended. 
+
+#### *Modify experiment settings in EXPT.src*
+
+Under `$WORK_HYCOM/$CONFIGNAME/topo` folder, you can find model topography data files `depth_TP2a0.10_01.[a,b]` where the last two digits represnt version number of the topography files. Here, we choose version `04` by setting `T="04"` in `EXPT.src`. Newly added variable `COMPILE_BIOMODEL` defines if HYCOM-CICE is coupled with ECOSMO. When `COMPILE_BIOMODEL="yes"`, the coupler is turned on and is turned off otherwise (eg, `COMPILE_BIOMODEL="no"`). The maximal number of ice blocks `MXBLCKS` relates to the MPI cores distribution, and could be recommened by the error message in a model run.
+Normally, this step is done manually, but here is a bash script to achieve the step at command line:
+```bash
+set -u
+cd $WORK_HYCOM/$CONFIGNAME/expt_$NEWEXPERIMENT
+#echo ""                                                >> EXPT.src
+#echo "# add new parameters for FABM and ICE"           >> EXPT.src
+#echo "export MXBLCKS=${MXBLCKS}"                       >> EXPT.src # maximal number of ice blocks 
+#echo "export COMPILE_BIOMODEL=\"${COMPILE_BIOMODEL}\"" >> EXPT.src # FABM coupler ON ("yes") or OFF ("no")
+sed -i "/^X=/c X=\"$NEWEXPERIMENT\"" EXPT.src                       # X based on dir name
+sed -i "/^E=/c E=\"$IEXPT\"" EXPT.src                               # E is X without "."
+sed -i "/^T=/c T=\"$T\"" EXPT.src                                   # topography version
+sed -i "/^export NMPI=/c export NMPI=$NMPI" EXPT.src
+sed -i "/^export MXBLCKS=/c export MXBLCKS=$MXBLCKS" EXPT.src
+sed -i "/^export COMPILE_BIOMODEL=/c export COMPILE_BIOMODEL=\"${COMPILE_BIOMODEL}\"" EXPT.src
+```
+
+- this command should be part of expt_new.sh with COMPILE_BIOMODEL, T as command line arguments.
+- if you get error message about ice blocks exceed maximum, then change this number to the once recommend in the error message.
+

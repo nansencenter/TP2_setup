@@ -7,6 +7,7 @@ Final goal of this repository is to provide installer and job submitter in the f
 - [Rquirements](#requirements)
   - [*Model components*](#model-components)
   - [*Bash environment*](#bash-environment)
+  - [*HPC modules on Betzy*](#hpc-modules-on-betzy)
 
 ### Rquirements
 
@@ -37,11 +38,9 @@ export LANG=en_US.UTF-8
 export LC_ALL=en_US.utf8
 ```
 
-#### *HPC modules*
+#### *HPC modules on Betzy*
 
 Add the following lines to `.bashrc`: 
-
-##### *On Betzy*
 
 ```bash
 ml purge

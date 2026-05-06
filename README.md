@@ -19,6 +19,7 @@ Each component is downloaded from its associated git repository:
    FABM is a Fortran 2003 programming framework (a coupler) for biogeochemical models of marine and freshwater systems. 
 6. [ERSEM](https://github.com/pmlmodelling/ersem)
    ERSEM is a marine biogeochemical and ecosystem model. It describes the cycling of carbon, nitrogen, phosphorus, silicon, oxygen and iron through the lower trophic level pelagic and benthic ecosystems. In this installation we use a carbon chenistry module of ERSEM.
+7. NERSC Python library (downloaded together with NERSC-HYCOM-CICE package).
 
 #### Bash environment
 
@@ -165,3 +166,58 @@ mkdir -p $HOME_FABM
 mkdir -p $WORK_HYCOM
 ```
 where `HOME_##` specifies a folder for storing model source files (*home*) and `WORK_##` specifies a folder for model configuration and execution (*build*).
+
+#### Cloning the model components
+
+Now you are ready to clone hycom under `HOME_HYCOM`:
+```bash
+set -u
+# clone HYCOM-CICE
+cd $HOME_HYCOM
+git clone https://github.com/nansencenter/${HYCOM_REPO}.git
+
+# switch to develop branch
+cd $HOME_HYCOM/${HYCOM_REPO}
+git fetch --all
+git checkout develop
+```
+and to clone biogeochemical modules under `HOME_FABM`:
+```bash
+set -u
+cd $HOME_FABM
+# clone FABM
+git clone https://github.com/fabm-model/fabm.git         # FABM
+
+# clone ERSEM
+git clone https://github.com/pmlmodelling/ersem.git      # ERSEM
+
+# clone ECOSMO_operational
+git clone git@github.com:nansencenter/nersc.git          # ECOSMO
+#cp -r /cluster/projects/nn9481k/caglar/ECOSMO_code/nersc # ECOSMO
+```
+
+Nersc Python libraries can be installed by
+```bash
+pip install --user scipy
+pip install --user cfunits
+pip install --user netCDF4
+pip install --user netcdftime
+pip install --user numpy
+pip install --user f90nml
+pip install --user pyproj
+```
+and
+```bash
+pip install --user $LIB_PYTHON/modeltools
+pip install --user $LIB_PYTHON/modelgrid
+pip install --user $LIB_PYTHON/gridxsec
+pip install --user $LIB_PYTHON/abfile
+```
+for the first installation and 
+```bash
+pip install --user --upgrade $LIB_PYTHON/modeltools
+pip install --user --upgrade $LIB_PYTHON/modelgrid
+pip install --user --upgrade $LIB_PYTHON/gridxsec
+pip install --user --upgrade $LIB_PYTHON/abfile
+```
+for updating the exsisting libraries.

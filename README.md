@@ -1,7 +1,7 @@
 # TP2_setup
 Instruction manual for installing TP2 with biogeochemistry to sigma2 HPC (Betzy etc.). This manual is developed based on 
 [Shuang's TP2 setup note](https://docs.google.com/document/d/1z53p0V0knFjaSZTXhO1WUQvG1OMDk7nzLdp_zZKGwJk/edit?tab=t.0) and [REDAME.betzy](https://github.com/nansencenter/NERSC-HYCOM-CICE/blob/develop/README.betzy). 
-Final goal of this repository is to provide installer and job submitter in the form of bash scripts.
+Final goal of this repository is to provide bash installer and job submitter to complete neccessary tasks at command line (not there yet).
 
 ## Table of Contents
 - [Rquirements](#requirements)

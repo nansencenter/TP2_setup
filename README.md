@@ -925,7 +925,7 @@ set -u
 cd $WORK_HYCOM/$CONFIGNAME/expt_$NEWEXPERIMENT
 sbatch srjob.sh
 ```
-Note TP2 7 days integration job takes about 10 min on Betzy.
+Note TP2 7 days integration job takes about 10 min CPU time on Betzy.
 
 After the submission, use command:
 ```bash

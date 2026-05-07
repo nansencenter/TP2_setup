@@ -884,7 +884,7 @@ Then we are ready to prepare SCRATCH folder:
 ```bash
 set -u
 cd $WORK_HYCOM/$CONFIGNAME/expt_$NEWEXPERIMENT
-expt_preprocess.sh $START $END $INITFLG
+../bin/expt_preprocess.sh $START $END $INITFLG
 ```
 If successful, you see message:
 ```bash

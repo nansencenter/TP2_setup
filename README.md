@@ -946,4 +946,4 @@ There is useful tool to create a sample job script on Sigma2 HPC: https://open.p
 
 ### Visulization
 
-For plotting hycom output file under `$WORK_HYCOM/$CONFIGNAME/expt_$NEWEXPERIMENT/data`, see sample Jupyter notebook `plot_2D_TP2_temp.ipynb`.
+For plotting hycom output file under `$WORK_HYCOM/$CONFIGNAME/expt_$NEWEXPERIMENT/data` with Python, see sample Jupyter notebook `plot_2D_TP2_temp.ipynb`.

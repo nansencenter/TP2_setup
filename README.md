@@ -897,7 +897,7 @@ We use default job script `srjob.sh` under `$WORK_HYCOM/$CONFIGNAME/expt_$NEWEXP
 sed -i 's|expt_postprocess.sh|bin/expt_postprocess.sh|g' srjob.sh
 chmod +x srjob.sh
 ```
-and, modify `srjob.sh` based on experiment settings (start date and end date) accordingly:
+and, modify `srjob.sh` based on experiment settings (`START`, `END` and `INITFLG`) accordingly:
 ```bash
 set -u
 

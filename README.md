@@ -923,11 +923,11 @@ cd $WORK_HYCOM/$CONFIGNAME/expt_$NEWEXPERIMENT
 sbatch srjob.sh
 ```
 
-After the submission, command:
+After the submission, use command:
 ```bash
 squeue -u $USER
 ```
-helps you check status of the submitted job.
+to check status of the submitted job.
 
 If job is successfuly finished, restart and daily mean files are moved to `$WORK_HYCOM/$CONFIGNAME/expt_$NEWEXPERIMENT/data` folder. If not, check log records under `$WORK_HYCOM/$CONFIGNAME/expt_$NEWEXPERIMENT/log`.
 

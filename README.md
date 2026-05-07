@@ -718,7 +718,7 @@ cp veldf4.b ../
 
 The diffusion files are ready under `$WORK_HYCOM/$CONFIGNAME/relax/$IEXPT` now.
 
-### Creating a job settings
+### Creating job settings
 
 In this guide, we assume we create a job setting for 1 week hycom run:
 ```bash

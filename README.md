@@ -105,6 +105,7 @@ In this instruction, we use the following directory tree structure for hycom (ve
           └── ${USERNAME}
               └── ${MODELNAME}                   # WORK_HYCOM (HYCOM-CICE work)
                   └── ${CONFIGNAME}              # WORK_HYCOM_CNF (configuration folder)
+                      ├── bin                    # 
                       ├── REGION.src
                       ├── expt_${NEWEXPERIMENT}  # WORK_HYCOM_EXP (experiment folder)
                       │   ├── EXPT.src

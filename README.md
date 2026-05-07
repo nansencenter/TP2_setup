@@ -932,7 +932,7 @@ Note TP2 7 days integration job takes about 10 min CPU time on Betzy.
 After the submission, use command:
 ```bash
 squeue -u $USER
-```bash
+```
 to check status of the submitted job.
 
 If job is successfuly finished, restart and daily mean files are moved to `$WORK_HYCOM/$CONFIGNAME/expt_$NEWEXPERIMENT/data` folder. The successful completion can be confirmed by

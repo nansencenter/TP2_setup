@@ -895,6 +895,7 @@ and you are ready to submit a hycom job.
 We use default job script `srjob.sh` under `$WORK_HYCOM/$CONFIGNAME/expt_$NEWEXPERIMENT` to submit a hycom job. First, fix the original `srjob.sh` by
 ```bash
 sed -i 's|expt_postprocess.sh|bin/expt_postprocess.sh|g' srjob.sh
+chmod +x srjob.sh
 ```
 and, modify `srjob.sh` based on experiment settings (start date and end date) accordingly:
 ```bash
@@ -913,6 +914,7 @@ sed \
   -e "s|^INITFLG=.*|INITFLG=\"$INITFLG\"|" \
   -e "s|^#SBATCH --time=.*|#SBATCH --time=\"$TIME\"|" \
   srjob.sh.backup > srjob.sh
+chmod +x srjob.sh
 ```
 and submit `srjob.sh`:
 ```bash

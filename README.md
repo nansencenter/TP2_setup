@@ -948,4 +948,4 @@ There is useful tool to create a sample job script on Sigma2 HPC: https://open.p
 
 ### Visualization
 
-For plotting hycom output file under `$WORK_HYCOM/$CONFIGNAME/expt_$NEWEXPERIMENT/data` with Python, see sample Jupyter notebooks [`plot_2D_TP2_temp.ipynb`](https://github.com/nansencenter/TP2_setup/blob/main/plot_2D_TP2_temp.ipynb) for 2D mapping and [plot_section_TP2.ipynb](https://github.com/nansencenter/TP2_setup/blob/main/plot_section_TP2.ipynb) for vertical section mapping.
+For plotting hycom output file under `$WORK_HYCOM/$CONFIGNAME/expt_$NEWEXPERIMENT/data` with Python, see sample Jupyter notebooks [`plot_2D_TP2_temp.ipynb`](https://github.com/nansencenter/TP2_setup/blob/main/plot_2D_TP2_temp.ipynb) for 2D mapping and [`plot_section_TP2.ipynb`](https://github.com/nansencenter/TP2_setup/blob/main/plot_section_TP2.ipynb) for vertical section mapping.

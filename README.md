@@ -894,7 +894,10 @@ and you are ready to submit a hycom job.
 
 We use default job script `srjob.sh` under `$WORK_HYCOM/$CONFIGNAME/expt_$NEWEXPERIMENT` to submit a hycom job. First, fix the original `srjob.sh` by
 ```bash
-sed -i 's|expt_postprocess.sh|bin/expt_postprocess.sh|g' srjob.sh
+sed -i \
+  -e 's|expt_postprocess.sh|bin/expt_postprocess.sh|g' \
+  -e '/^done$/d' \
+  srjob.sh
 chmod +x srjob.sh
 ```
 and, modify `srjob.sh` based on experiment settings (`START`, `END` and `INITFLG`) accordingly:

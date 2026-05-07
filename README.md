@@ -839,7 +839,7 @@ done
 
 After this, nesting files can be found under `$WORK_HYCOM/$CONFIGNAME/nest/$IEXPT`. How to create off-line nesting files, see Shuang's note.
 
-#### *Prepare atmospheric forcing files (⚠️**Note** Skip when using srjob.sh to submit a job)*
+#### *Prepare atmospheric forcing files (⚠️Skip when using srjob.sh to submit a job)*
 
 Run the script:
 ```bash
@@ -875,7 +875,7 @@ touch stamp_${GDATE_START}-${GDATE_END}
 ```
 For example, this stamp file can be used in SLRUM job script to avoid duplication of forcing file generation.
 
-#### *Prepare SCRATCH folder (⚠️**Note** Skip when using srjob.sh to submit a job)*
+#### *Prepare SCRATCH folder (⚠️Skip when using srjob.sh to submit a job)*
 
 Then we are ready to prepare SCRATCH folder:
 
@@ -892,7 +892,13 @@ and you are ready to submit a hycom job.
 
 ### Job submission
 
-We use default job script `srjob.sh` under `$WORK_HYCOM/$CONFIGNAME/expt_$NEWEXPERIMENT` to submit a hycom job. First, modify `srjob.sh`:
+We use default job script `srjob.sh` under `$WORK_HYCOM/$CONFIGNAME/expt_$NEWEXPERIMENT` to submit a hycom job. Default 
+
+```bash
+
+```
+
+First, modify `srjob.sh`:
 ```bash
 set -u
 
@@ -908,6 +914,7 @@ sed \
   -e "s|^END=.*|END=\"$END\"|" \
   -e "s|^INITFLG=.*|INITFLG=\"$INITFLG\"|" \
   -e "s|^#SBATCH --time=.*|#SBATCH --time=\"$TIME\"|" \
+  -e "s|expt_postprocess\.sh|bin/expt_postprocess.sh|g" \
   srjob.sh.backup > srjob.sh
 ```
 and submit `srjob.sh`:

@@ -298,6 +298,7 @@ After a new *experiment* folder `expt_$NEWEXPERIMENT` is created, some adjustmen
 #### *Copy and edit hycom_opt* ⚠️**NEW**
 
 ```bash
+set -u
 cd $WORK_HYCOM/$CONFIGNAME/expt_$NEWEXPERIMENT
 cp $HOME_HYCOM/$HYCOM_REPO/TP5a0.06/expt_01.0/hycom_opt .
 sed -i 's/sssrmx_scalar=99\./sssrmx_scalar=.5/' hycom_opt

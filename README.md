@@ -1,5 +1,5 @@
 # TP2_setup
-Instruction manual for installing TP2 with biogeochemistry to sigma2 HPC (Betzy etc.). This manual is developed based on 
+Instruction manual for installing TP2 (hycom 17km Arctic Ocean configuration) with ECOSMO (BGC module) on sigma2 HPC (Betzy etc.). This manual is developed based on 
 [Shuang's TP2 setup note](https://docs.google.com/document/d/1z53p0V0knFjaSZTXhO1WUQvG1OMDk7nzLdp_zZKGwJk/edit?tab=t.0) and [REDAME.betzy](https://github.com/nansencenter/NERSC-HYCOM-CICE/blob/develop/README.betzy). 
 Final goal of this repository is to provide bash installer and job submitter to complete neccessary tasks at command line (not there yet).
 

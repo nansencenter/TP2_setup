@@ -33,7 +33,7 @@ Final goal of this repository is to provide bash installer and job submitter to 
   - [*Prepare atmospheric forcing files*](#prepare-atmospheric-forcing-files)
   - [*Prepare SCRATCH folder*](#prepare-scratch-folder)
 - [Job submission](#job-submission)
-- [Visulization](#visualization)
+- [Visualization](#visualization)
 
 ### Rquirements
 
@@ -944,6 +944,6 @@ If it returns `GOODRUN`, job is successfuly finished. If not, check log records 
 
 There is useful tool to create a sample job script on Sigma2 HPC: https://open.pages.sigma2.no/job-script-generator/.
 
-### Visulization
+### Visualization
 
 For plotting hycom output file under `$WORK_HYCOM/$CONFIGNAME/expt_$NEWEXPERIMENT/data` with Python, see sample Jupyter notebook [`plot_2D_TP2_temp.ipynb`](https://github.com/nansencenter/TP2_setup/blob/main/plot_2D_TP2_temp.ipynb).

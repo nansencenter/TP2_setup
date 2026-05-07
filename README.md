@@ -146,7 +146,7 @@ for TP2 configuration with ECOSMO (BGC module) on Betzy. To setup hycom without 
 export COMPILE_BIOMODEL="no"   # turn on/off ("yes/no") BGC (FABM-ECOSMO) module
 export NTRACR=0                # BGC on/off: 0-physics only; 1-biology restart; -1-biology initialized with climatology
 ```
-Note `NEWEXPERIMENT` is user defined variable with format `NN.M` that defines experiment folder name (see directory tree below), where `NN` is experiment folder ID (two degits integer) and `M` is its version ID  (sigle degit integer). 
+Note `NEWEXPERIMENT` is user defined variable with format `NN.M` that defines experiment folder name (see directory tree above), where `NN` is experiment folder ID (two degits integer) and `M` is its version ID  (sigle degit integer). 
 
 Define HYCOM-CICE repository as
 ```bash
